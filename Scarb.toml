@@ -1,0 +1,16 @@
+[package]
+name = "cairo_lotto_backend"
+version = "0.1.0"
+# See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest
+
+[dependencies]
+starknet = ">=1.1.0"
+
+# my remake of OpenZeppelin ERC20 standard implementation is inside the below repo:
+openzeppelin = { git = "https://github.com/0xKubitus/openzeppelin-cairo1-standards.git" }
+
+[scripts]
+test-caironet = "sudo docker run --rm -v /home/kubitus/.cache/scarb/:/root/.cache/scarb -v $(pwd):/project -t --entrypoint cairo-test glihm/caironet:1.1.0-d --starknet /project/"
+test-caironet-local = "../../target/release/cairo-test --starknet ."
+
+[[target.starknet-contract]]
