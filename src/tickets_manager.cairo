@@ -432,7 +432,7 @@ mod unit_tests {
         assert(Tickets_manager::get_ETH_contract_adrs() == ETH_address, 'Constructor ETH adrs error');
 
         // below is a test that should fail
-        assert(name_test_res != name, 'voluntary error');
+        assert(name_test_res == 'whatever', 'voluntary error');
     }
 
     #[test]
