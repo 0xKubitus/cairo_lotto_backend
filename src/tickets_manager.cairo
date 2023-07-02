@@ -113,6 +113,11 @@ mod Tickets_manager {
     fn tickets_sold() -> u256 {
         return _sold_tickets::read();
     }
+
+    #[view]
+    fn get_ETH_contract_adrs() -> ContractAddress {
+        return _ETH_contract_address::read();
+    }
     // ##################################
 
 
@@ -263,6 +268,11 @@ mod Tickets_manager {
     fn _get_ticket_nber() -> u256 {
         let last_token_id = tickets_sold();
         let next_token = last_token_id + 1_u256;
+
+        // Define the "token_id" of the new ticket
+        let last_token_id = _sold_tickets::read();
+        let token_id: u256 = last_token_id + 1;
+
         return next_token;
     }
 
@@ -368,26 +378,68 @@ mod Tickets_manager {
 
                         // UNIT TESTS
 
-// #[cfg(test)]
-// mod unit_tests {
+#[cfg(test)]
+mod unit_tests {
 
-//     use starknet::ContractAddress;
-//     use starknet::contract_address_const;
+    use starknet::ContractAddress;
+    use starknet::contract_address_const;
 
-//     use super::Tickets_manager;
-//     use openzeppelin::src::token::erc20;
+    use super::Tickets_manager;
 
-//     #[test]
-//     fn test_get_base_price() {
-//         let ticket_price = Tickets_manager::get_base_price();
-//         assert(ticket_price == 5000000000000000, 'wrong price');
-//     }
+    #[test]
+    #[available_gas(2000000)]
+    fn test_constructor() {
+        // Declaring some values as parameters/argmuments to the constructor function
+        let name: felt252 = 'testname';
+        let symbol: felt252 ='testsymbol';
 
-//     #[test]
-//     #[available_gas(2000000)]
-//     fn test_tickets_sold() {
-//         let total = Tickets_manager::tickets_sold();
-//         assert(total == 0, 'wrong sold_tickets amount');
-//     }
+        let sold_tickets: u256 = 0_u256;
+        let ETH_address: ContractAddress = contract_address_const::<1>();
+    
+        // Calling the constructor function from "Tickers_manager" contract module
+        Tickets_manager::constructor(name, symbol, sold_tickets, ETH_address);
 
-// }
+        // Using our contract's view functions and verify if they return the expected values
+        let name_test_res = Tickets_manager::get_name();
+        assert(name_test_res == name, 'Constructor name error');
+        // One-liners for the other functions
+        assert(Tickets_manager::get_symbol() == symbol, 'Constructor symbol error');
+        assert(Tickets_manager::get_base_price() == 5000000000000000_u256, 'Constructor price error');
+        assert(Tickets_manager::tickets_sold() == sold_tickets, 'Constructor sold tickets error');
+        assert(Tickets_manager::get_ETH_contract_adrs() == ETH_address, 'Constructor ETH adrs error');
+
+        // below is a test that should fail
+        // assert(name_test_res != name, 'voluntary error'); // (I should put it in another test function to try it separately as here I want to test if the whole constructor is working as I expect)
+    }
+
+    #[test]
+    #[available_gas(2000000)]
+    fn failing_test_constructor() {
+        // Declaring some values as parameters/argmuments to the constructor function
+        let name: felt252 = 'testname';
+        let symbol: felt252 ='testsymbol';
+
+        let sold_tickets: u256 = 0_u256;
+        let ETH_address: ContractAddress = contract_address_const::<1>();
+    
+        Tickets_manager::constructor(name, symbol, sold_tickets, ETH_address);
+
+        let name_test_res = Tickets_manager::get_name();
+        
+        assert(Tickets_manager::get_symbol() == symbol, 'Constructor symbol error');
+        assert(Tickets_manager::get_base_price() == 5000000000000000_u256, 'Constructor price error');
+        assert(Tickets_manager::tickets_sold() == sold_tickets, 'Constructor sold tickets error');
+        assert(Tickets_manager::get_ETH_contract_adrs() == ETH_address, 'Constructor ETH adrs error');
+
+        // below is a test that should fail
+        assert(name_test_res != name, 'voluntary error');
+    }
+
+    #[test]
+    fn test_get_base_price() {
+        let price: u256 = 5000000000000000;
+        assert(Tickets_manager::get_base_price() == price, 'Constructor price error');
+    }
+
+
+}
