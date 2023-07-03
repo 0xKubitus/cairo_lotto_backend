@@ -81,30 +81,23 @@ fn test_eth_bal(){
     assert(ERC20::balance_of(user1) == initial_supply, '_get_eth_init_bal() failed');
 }
 
-// EXEMPLE
-// #[test]
-// #[available_gas(2000000)]
-// fn test_transfer(){
-//     let (sender, supply) = setup(); // this declares the result from setup() function as two variables, namely "sender" and "account" 
+#[test]
+#[available_gas(2000000)]
+#[caironet(ETH_CNTRCT_ADRS: 123456789, USER1_ADRS: 11111, TICKETS_CONTRACT_ADRS: 987654321)]
+fn test__get_spending_approval(){
+    let USER1_ADRS: ContractAddress = contract_address_const::<11111>();
+    let ETH_CNTRCT_ADRS: ContractAddress = contract_address_const::<123456789>();
+    let TICKETS_CONTRACT_ADRS: ContractAddress = contract_address_const::<987654321>();
 
-//     let recipient: ContractAddress = contract_address_const::<2>(); // make sure to create a second dummy account address here
-    
-//     let amount: u256 = u256_from_felt252(100);
-//     let balance_recipient = ERC20::balance_of(recipient);
-//     let sender_balance = ERC20::balance_of(sender);
-//     let total_supply_balance = ERC20::get_total_supply();
-    
-//     ERC20::transfer(recipient, amount);
+    set_contract_address(TICKETS_CONTRACT_ADRS);
+    tickets_manager_setup();
 
-//     // STEP 1: Verify that the amount of 100 has been transferred to the recipient account
-//     assert(ERC20::balance_of(recipient) == balance_recipient + amount, 'ERC20:WRONG BALANCE RECIPIENT');
+    set_contract_address(ETH_CNTRCT_ADRS);
+    eth_contract_setup();
 
-//     // STEP 2: Verify that the balance of the sender decreases by the same amount
-//     assert(ERC20::balance_of(sender) == sender_balance - amount, 'ERC20:WRONG SENDER BALANCE');
-
-//     // STEP 3: Verify that the total_supply value remains the same as when it was initialized
-//     assert(ERC20::get_total_supply() == total_supply_balance, 'ERC20:WRONG TOTAL SUPPLY');
-// }
+    Tickets_manager::_get_spending_approval(USER1_ADRS, 6000000000000000_u256);
+    // assert();
+}
 
 
 
