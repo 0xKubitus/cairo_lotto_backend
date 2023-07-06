@@ -167,6 +167,9 @@ mod Tickets_manager {
 
         // Get the "_base_price" value of a ticket
         let ticket_price = get_base_price();
+
+        // Get the ETH contract's address
+        let eth_contract: ContractAddress = _ETH_contract_address::read();
         // ---------------------------------------------
 
 
@@ -187,7 +190,7 @@ mod Tickets_manager {
 
         // ---------------------------------------------
         // Step3: Get approval for spending the user's ETH (amount = _base_price) 
-        _get_spending_approval(manager_address, ticket_price);
+        _get_spending_approval(manager_address, ticket_price, eth_contract);
         // ---------------------------------------------
 
 
@@ -291,9 +294,8 @@ mod Tickets_manager {
     }
 
     #[internal]
-    fn _get_spending_approval(spender: ContractAddress, amount: u256) {
-        let eth_contract: ContractAddress = _ETH_contract_address::read();
-        IERC20Dispatcher{contract_address: eth_contract}.approve(spender, amount);
+    fn _get_spending_approval(spender: ContractAddress, amount: u256, erc20_contract: ContractAddress) {
+        IERC20Dispatcher{contract_address: erc20_contract}.approve(spender, amount);
     }
 
     #[internal]

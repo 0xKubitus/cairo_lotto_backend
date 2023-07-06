@@ -83,7 +83,7 @@ fn test_eth_bal(){
 
 #[test]
 #[available_gas(2000000)]
-#[caironet(ETH_CNTRCT_ADRS: 123456789, USER1_ADRS: 11111, TICKETS_CONTRACT_ADRS: 987654321)]
+#[caironet(ERC20: 123456789, USER1_ADRS: 11111, TICKETS_CONTRACT_ADRS: 987654321)]
 fn test__get_spending_approval(){
     let USER1_ADRS: ContractAddress = contract_address_const::<11111>();
     let ETH_CNTRCT_ADRS: ContractAddress = contract_address_const::<123456789>();
@@ -95,7 +95,7 @@ fn test__get_spending_approval(){
     set_contract_address(ETH_CNTRCT_ADRS);
     eth_contract_setup();
 
-    Tickets_manager::_get_spending_approval(USER1_ADRS, 6000000000000000_u256);
+    Tickets_manager::_get_spending_approval(USER1_ADRS, 6000000000000000_u256, ETH_CNTRCT_ADRS);
     // assert();
 }
 
